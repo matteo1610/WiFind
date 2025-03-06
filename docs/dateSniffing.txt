@@ -1,0 +1,18 @@
+				EMPTY		CROWDED
+
+E1				X		x
+E2
+E3
+CORRIDOR
+OUT
+
+
+	Crowded Corridor: 		7/3/25 ore 10.30 (pausa)
+	Crowded E3: 			7/3/25 ore 11.45/12.00
+	Empty 	E3:			7/3/25 ore 14.00
+	Empty	E2: 			7/3/25 ore 14.30
+	Empty	out:			7/3/25 ore mid
+	Empty	corridor:		7/3/25 ore mid
+OK	Empty	E1: 			7/3/25 ore 17.00
+	Crowded out:			10/3/25 ore 10.30 (pausa)
+	Crowded E2:			10/3/25 ore 12.00-12.15 (lez. Scarito)
