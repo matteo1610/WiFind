@@ -1,10 +1,11 @@
 				EMPTY		CROWDED
 
-E1				X		x
-E2
-E3
-CORRIDOR
-OUT
+E1						
+E2				X
+E3				X			X
+CORRIDOR		X
+OUT				X
+
 
 
 	Crowded Corridor: 		7/3/25 ore 10.30 (pausa)
