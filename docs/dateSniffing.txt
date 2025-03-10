@@ -1,10 +1,10 @@
 				EMPTY		CROWDED
 
-E1						
+E1							X		
 E2				X
 E3				X			X
-CORRIDOR		X
-OUT				X
+CORRIDOR		X			X
+OUT				X			X
 
 
 
