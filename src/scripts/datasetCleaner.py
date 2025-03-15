@@ -26,10 +26,10 @@ for file_name in os.listdir(args.folder_path):
         df_filtered = df[df['SSID'] == 'ALMAWIFI']
 
         # Keep only the relevant columns: Aula, Situazione, BSSID, SSID, Signal
-        df_filtered = df_filtered[['Aula', 'Situazione', 'BSSID', 'SSID', 'Signal']]
+        #df_filtered = df_filtered[['Aula', 'Situazione', 'BSSID', 'SSID', 'Signal']]
 
         # Create the output filename with 'AW' prefix and save it in the 'AW' subfolder
-        new_filename = os.path.join(aw_folder, 'AW' + file_name)
+        new_filename = os.path.join(aw_folder, 'AW_' + file_name)
 
         # Save the cleaned data to a new CSV file
         df_filtered.to_csv(new_filename, index=False)
