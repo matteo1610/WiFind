@@ -1,3 +1,8 @@
+# FINALDATASET
+# python3 finalDataset.py path_to_ALMAWIFI_filtered_files
+# Crea un dataset csv unico raccogliendo e rielaborando i dati dei dataset filtrati ALMAWIFI
+# Out: 1 file finale
+
 import os
 import sys
 import pandas as pd

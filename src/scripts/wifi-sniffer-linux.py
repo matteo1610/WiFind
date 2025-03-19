@@ -1,3 +1,8 @@
+# WIFISNIFFER
+# python3 wifi_sniffer_linux.py
+# Raccoglie segnali wifi presenti in zona ad intervalli regolari di tempo.
+# Out: file csv con i dati raccolti
+
 import subprocess
 import re
 import csv

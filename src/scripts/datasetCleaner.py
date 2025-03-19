@@ -1,3 +1,8 @@
+# DATASETCLEANER
+# python3 datasetCleaner.py path_to_folder_with_csv
+# Pulisce i dati wifi raccolti con wifi_sniffer_linux, mantenendo solo le reti con SSID ALMAWIFI
+# Out: i file .csv filtrati ALMAWIFI, in cartella /AW
+
 import pandas as pd
 import os
 import argparse
