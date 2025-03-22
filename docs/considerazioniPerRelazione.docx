@@ -1,0 +1,12 @@
+PROVA DI ALTRI MODELLI
+Come presentato nel paper [Overview of WiFi fingerprinting-based indoor positioning], 
+sono possibili diversi approcci basati su Machine Learnign per risolvere il problema del wifi fingerprinting.
+In particolare, per questo tipo di problema, vengono usati gli algoritmi 
+K-nearest neighbour (KNN), con uso di clustering nel caso di dataset di grosse dimensioni,
+Support Vector Machine (SVM) e Random Forest, usato nel caso di dataset di grandi dimensioni.
+
+Per il nostro caso di studio abbiamo deciso di sperimentare usando 
+
+
+
+BILANCIAMENTO DEI PARAMETRI
