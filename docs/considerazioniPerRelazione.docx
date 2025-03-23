@@ -1,39 +1,47 @@
 PROVA DI ALTRI MODELLI
-Come presentato nel paper [Overview of WiFi fingerprinting-based indoor positioning], 
-sono possibili diversi approcci basati su Machine Learnign per risolvere il problema del wifi fingerprinting.
-In particolare, per questo tipo di problema, vengono usati gli algoritmi 
-K-nearest neighbour (KNN), con uso di clustering nel caso di dataset di grosse dimensioni,
-Support Vector Machine (SVM) e Random Forest, usato nel caso di dataset di grandi dimensioni.
 
+Come discusso nel paper
+[Overview of WiFi fingerprinting-based indoor positioning]
+https://ietresearch.onlinelibrary.wiley.com/doi/full/10.1049/cmu2.12386, 
+esistono diversi approcci basati su Machine Learning per affrontare il problema del WiFi fingerprinting
 
-Solitamente si consiglia di usare KNN se:
-- necessita' di modello piu' semplice da aggiustare e usare out of the box
-- con dataset non eccessivamente grandi
+Tra gli algoritmi comunemente utilizzati troviamo:
+- K-Nearest Neighbour (KNN)
+    - ideale per dataset di dimensioni moderate
+    - rapido da implementare e regolare
+    - sconsigliato su dataset con numerose features
+- Support Vector Machine (SVM)
+    - consigliato per dataset ad alta dimensionalità
+    - sconsigliato su dataset con numerosi outlier e quando le classi sono molto mescolate nello spazio delle feature, rendendo difficile la separazione dei cluster
+- Random Forest, indicato per dataset molto grandi grazie alla sua robustezza e capacità di generalizzazione
 
-Sconsigliato con:
-- dataset con molte features (molte dimensioni)
- 
-Si consiglia SVG:
-- dataset con molte features
+Nel nostro esperimento, iniziamo con KNN, un modello semplice ma efficace per questa tipologia di problema.
+Se i risultati ottenuti non saranno soddisfacenti, considereremo SVM per migliorare la raffinatezza del modello.
 
-MA
-- sconsigliato quando i dati di varie categoria sono molto "mischiati" nel piano di riferimento
-(quindi e' difficile separare i cluster)
-- scarso in presenza di outliers
-- e' molto sensibile ai parametri impostati della rete: 
-il loro corretto setting e' fondamentale per evitare overfitting 
-
-
-
-Per il nostro caso di studio abbiamo deciso di sperimentare partendo con KNN,
-un modello piu' semplice ma comunque efficace in questo tipo di applicazione.
-Qualora questo modello non garantisse risultati soddisfacenti, passeremo a SVM
-per avere un modello piu' raffinato
 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%
 PARAMETRI di KNN
+- n_neighbors: il "K" di KNN, ovvero quanti vicini si considerano per la classificazione
+    - per K piccoli si correi il rischio di overfitting, con K grandi di underfitting
+- weights: importanza assegnata a ciascun vicino considerato.
+    uniform: ogni punto ha la stesso importanza
+    distance: punti piu' vicini hanno piu' importanza di quelli piu' distanti
+- algorithm: usato per computare quali sono i vicini a minore distanza
+    ballTree: utile per dataset con molte features e sparsi
+    KDTree: utile con dataset con poche features e uniformemente bilanciati
+    brute force: semplice diretto, adatto a dataset piccoli, calcola la distanza di ogni coppia di punti nel dataset e seleziona quelli piu' vicini
+- leaf_size: numero di datapoint contenibili da una foglia. Se datapoint complessivi > leaf_size, si separa e si crea un nodo figlio
+    -passato a ballTree o KDTree. 
+    - Influenza velocita' (dimensione consigliata direttamente proporzionale a numero di feature di dataset)
+    - Valore ottimale dipende dalla natura del problema
+- p: potenza per metrica Minkowski
+- metric: per il calcolo della distanza. Le piu' usate:
+    - euclidean: la piu' comune, misura la distanza tra due punti nello spazio
+    - manhattan: piu' adatta su dati con molte features
+    - minkowski: una generalizzazione delle precedenti (se p=1 allora e' manhattan, se p=2 allora e' euclidea)
+
 
 
 
@@ -41,17 +49,41 @@ PARAMETRI di KNN
 BILANCIAMENTO DEI PARAMETRI
 Il Bilanciamento dei parametri di KNeighborsClassifier e' affidato a GridSearchCV,
 che prova tutti i possibili valori assegnati ai parametri, ottimizzando la scelta secondo una certa metrica.
-Sono state effettuate alcune scelte (anche a scopo di evitare overfitting) prima di lasciare libero arbitrio all'algortimo.
+Sono state effettuate alcune scelte a priori (anche a scopo di evitare overfitting) prima di lasciare libero arbitrio all'algortimo.
 
+- n_neighbors: testiamo con un range di prova 3 <= k <= 20 per limitare fenomeni di over e under fitting
+- weights: data la struttura del problema, 'uniform' potrebbe essere la soluzione adatta. Nonostante cio' lasciamo aperta la scelta
+- algorithm: viste le tipologie e le loro caratteristiche, i due tipi piu' adatti risultani ball_tree  ed eventualmente brute_force, data la dimensione limitata del dataset
+- leaf_size: default 30 buon compromesso tra numero feature del dataset (medio) e tendenza a uso di ballTree (che predilige size medio-alte)
+- metric: data la complessita' dei dati, il calcolo basato su distanza euclidea e di manhattan dovrebbe essere sufficientemente
+- p: dato il putno precedente, il parametro risulta superfluo
 
 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%
-PARAMETRIDI GRIDSEARCHCV
+PARAMETRI DI GRIDSEARCHCV
+Per quanto riguarda GridSearchCV stessa, si illustrano le scelte dei parametri.
+- cv: determina la strategia di cross validation splitting del dataset passato
+    decidiamo per una StratifiedKFold per garantire che ogni fild abbia la stessa distribuzione delle classi
+    con split in 4 subset, per simulare il classico 70% training set (17,5% validation sets sul totale), 30% test set
+- scoring: il miglior metodo dipende dal bilanciamento o meno del dataset
+    -  basato su 'accuracy' se il dataset e' bilanciato; metodo piu' semplice
+    - 'f1_weighted' con dataset piu' sbilanciati
+    - nel nostro caso non state rilevate differenze significative tra i due tipi di scoring 
+- n_jobs = -1, per lavorare su tutti i processori
 
+
+Per approfondimenti su questo argomento
+https://www.mdpi.com/2079-9292/13/22/4448
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%
-RISULTATI
-Da risultato KNN e' sufficientemente buono in tutte le versioni, quindi non necessitaili
+ALCUNI RISULTATI (IN GENERALE)
+- Da risultato KNN e' sufficientemente buono in tutte le versioni, quindi non necessitiamo di esplorare il problema con SVM
+- Il sistema sembra spesso eccessivamente buono con il dataset (nelle varie versioni con diverso numero di AP)
+    e sembra andare spesso in overfitting con i soli dati a disposizione
+    - Il problema e' leggermente mitigato diminuendo la percentuale di dataset da destinare al training 
+    (e di conseguenze aumentando il test set)
+    - altra soluzione: trasformare il dataset in 'booleano', ovvero anziche avere i valori segnati come RSSI,
+    aver 1 se il dato AP e' stato rilevato in quel momento di rilevazione, 0 altrimenti
