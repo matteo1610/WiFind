@@ -5,6 +5,7 @@ In particolare, per questo tipo di problema, vengono usati gli algoritmi
 K-nearest neighbour (KNN), con uso di clustering nel caso di dataset di grosse dimensioni,
 Support Vector Machine (SVM) e Random Forest, usato nel caso di dataset di grandi dimensioni.
 
+
 Solitamente si consiglia di usare KNN se:
 - necessita' di modello piu' semplice da aggiustare e usare out of the box
 - con dataset non eccessivamente grandi
@@ -25,14 +26,29 @@ il loro corretto setting e' fondamentale per evitare overfitting
 
 
 Per il nostro caso di studio abbiamo deciso di sperimentare partendo con KNN,
-un modello piu' semplice ma comunque comune in questo tipo di applicazione.
-Qualora questo modello non garantisse risultati soddisfacenti, passiamo a SVG 
+un modello piu' semplice ma comunque efficace in questo tipo di applicazione.
+Qualora questo modello non garantisse risultati soddisfacenti, passeremo a SVM
 per avere un modello piu' raffinato
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+PARAMETRI di KNN
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%
 BILANCIAMENTO DEI PARAMETRI
+Il Bilanciamento dei parametri di KNeighborsClassifier e' affidato a GridSearchCV,
+che prova tutti i possibili valori assegnati ai parametri, ottimizzando la scelta secondo una certa metrica.
+Sono state effettuate alcune scelte (anche a scopo di evitare overfitting) prima di lasciare libero arbitrio all'algortimo.
 
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+PARAMETRIDI GRIDSEARCHCV
 
 
 
