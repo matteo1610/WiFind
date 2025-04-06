@@ -5,7 +5,7 @@ WiFind is a project focused on indoor localization using **WiFi Fingerprinting**
 
 ## Installation and Setup
 Instructions on setting up the project environment:
-1. Clone the repository: `git clone [repository link]`
+1. Clone the repository: `git clone https://gitlab.com/GAperol/uiauia-project-ai.git`
 2. Install dependencies: `pip install -r requirements.txt`
 
 ## Data
