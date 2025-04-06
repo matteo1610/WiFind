@@ -1,7 +1,7 @@
-# Project Title: [Project Name]
+# Project Title: WiFind
 
 ## Overview
-Briefly describe what this project is about. Include the main objective and potential impact.
+WiFind is a project focused on indoor localization using **WiFi Fingerprinting** techniques. The main objective is to determine the position of a user inside a building by analyzing Wi-Fi signals (RSSI) from various Access Points (APs). This project was conducted in the Ercolani building of the University of Bologna, where real-world data was collected to create a customized dataset.  
 
 ## Installation and Setup
 Instructions on setting up the project environment:
@@ -9,30 +9,30 @@ Instructions on setting up the project environment:
 2. Install dependencies: `pip install -r requirements.txt`
 
 ## Data
-Describe the data used in this project:
-- **Raw Data**: Location and description of the raw data.
-- **Processed Data**: How the raw data is processed/transformed.
+The project uses Wi-Fi fingerprinting data collected in real-world conditions. The data is categorized as follows:
+
+- **Raw Data**: Located in `/data/raw/`, it includes unprocessed Wi-Fi signal scans collected in different rooms and conditions (`Empty`, `Crowded`).
+- **Processed Data**: Located in `/data/processed/`, it includes datasets that have been preprocessed and transformed for analysis and modeling purposes.
 
 ## Usage
-How to run the project:
-1. Step-by-step instructions.
-2. Example commands.
+1. Navigate to the project directory:
+   ```bash
+   cd /path/to/uiauia-project-ai
+2. Start Jupyter Notebook:
+   ```bash
+   jupyter notebook
+   ```
+3. Open and run: [main.ipynb](src/notebooks/main.ipynb) 
 
 ## Structure
 - `/data`: Contains raw and processed data.
 - `/src`: Source code for the project.
-  - `/scripts`: Individual scripts or modules.
-  - `/notebooks`: Jupyter notebooks or similar.
-- `/tests`: Test cases for your application.
-- `/docs`: Additional documentation in text format (e.g., LaTeX or Word).
-- `/public`: Folder where GitLab pages will write static website. 
-- `index.html`: Documentation in rich format (e.g., HTML, Markdown, JavaScript), will populate `public`.
-
-## Contribution
-Guidelines for contributing to the project (if applicable).
+  - `/scripts`: Python scripts for data preprocessing and analysis.
+  - `/notebooks`: Jupyter notebooks for experiments and visualization.
+- `/tests`: Placeholder for future unit tests.
+- `/docs`: Additional documentation, including the detailed project report.
+- `/public`: Directory for static website generation.
+- `index.html`: Main documentation file in HTML format.
 
 ## License
-State the license or leave it as default (if applicable).
-
-## Contact
-Your contact information for students or others to reach out with questions.
+This project is licensed under the [CC0 1.0 Universal](https://creativecommons.org/publicdomain/zero/1.0/) license. 
