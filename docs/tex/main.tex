@@ -49,7 +49,7 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%
 \section{Introduzione}
-La localizzazione degli utenti all'interno di ambienti è un problema di grande interesse in diversi ambiti, come la sicurezza, la domotica e la navigazione indoor. Una delle tecniche più usate per determinare la posizione di un utente è il \textbf{WiFi fingerprinting}\footnote{tecnica di localizzazione basata sulla raccolta e analisi delle ''impronte digitali'' dei segnali WiFi in una determinata area. Ogni posizione ha una \textit{firma} unica data dalla combinazione dei segnali ricevuti dai vari access point, che viene utilizzata per stimare la posizione dell'utente.}, che sfrutta la potenza del segnale ricevuto (RSSI\footnote{\textit{Received Signal Strength Indicator} indica la potenza del segnale ricevuto da un dispositivo, misurata in dBm (decibel rispetto a 1 mW).}) da più punti di accesso per inferire la posizione tramite modelli di machine learning.
+La localizzazione degli utenti all'interno di ambienti è un problema di grande interesse in diversi ambiti, come la sicurezza, la domotica e la navigazione indoor. Una delle tecniche più usate per determinare la posizione di un utente è il \textbf{WiFi fingerprinting}\footnote{tecnica di localizzazione basata sulla raccolta e analisi delle ''impronte digitali'' dei segnali WiFi in una determinata area. Ogni posizione ha una \textit{firma} unica data dalla combinazione dei segnali ricevuti dai vari access point, che viene utilizzata per stimare la posizione dell'utente.}, che sfrutta la potenza del segnale ricevuto (RSSI\footnote{\textit{Received Signal Strength Indicator} indica la potenza del segnale ricevuto da un dispositivo, misurata in dBm (decibel rispetto a 1 mW).}) da più punti di accesso per stimare la posizione tramite modelli di machine learning.
 
 \subsection{Descrizione del problema}
 Il problema in analisi consiste nel determinare con la massima precisione possibile la posizione di un utente in un dato ambiente indoor utilizzando solo i dati di rete, evitando l'uso di hardware aggiuntivo come GPS o sensori esterni. \\
@@ -182,7 +182,7 @@ Nel paper viene condotta un'analisi comparativa tra diversi algoritmi di Machine
 Vengono citati:
 \begin{itemize}
     \item \textbf{K-Nearest Neighbour (KNN)}: particolarmente adatto a dataset di dimensioni moderate, e relativamente semplice da implementare e regolare. Tuttavia non è consigliato per dataset con un elevato numero di feature, poiché la sua efficienza può risentirne.
-    \item \textbf{Support Vector Machine (SVM)}: efficace su dataset ad alta dimensionalità, grazie alla sua capacità di trovare iperpiani di separazione ottimali tra le classi.Ciononostante, può risultare meno performante in presenza di numerosi outlier o quando le classi sono fortemente sovrapposte nello spazio delle feature, rendendo difficile la separazione dei cluster.
+    \item \textbf{Support Vector Machine (SVM)}: efficace su dataset ad alta dimensionalità, grazie alla sua capacità di trovare iperpiani di separazione ottimali tra le classi. Ciononostante, può risultare meno performante in presenza di numerosi outlier o quando le classi sono fortemente sovrapposte nello spazio delle feature, rendendo difficile la separazione dei cluster.
     \item \textbf{Random Forest}: particolarmente indicato per dataset di grandi dimensioni, grazie alla sua robustezza e capacità di generalizzazione. Essendo un metodo basato su un insieme di alberi decisionali, riesce a ridurre il rischio di overfitting e a garantire una maggiore stabilità nelle predizioni.
 \end{itemize}
 
@@ -354,13 +354,13 @@ Ad ogni combinazione sono stati associati i relativi valori delle metriche prece
     \label{MCGtid}
 \end{figure} 
 
-Dall'analisi delle matrici di confusione riportate in \autoref{MCGtid} e dai dati in \autoref{tab:model_metrics}, emerge che il modello, nel caso di situazioni \textit{Empty} e \textit{Crowded}, presenta le \textbf{prestazioni migliori quando il dataset di addestramento e quello di test coincidono}, mentre è tendenzialmente meno performante quando train e test avvengono su scenari differenti.\\
-Il dataset \textbf{\textit{Hybrid} sembra offrire la maggiore capacità di adattamento} in quanto il modello è allenato su tutte le situazioni possibili, permettendo quindi una classificazione globalmente più accurata. \\
+Dall'analisi delle matrici di confusione riportate in \autoref{MCGtid} e dai dati in \autoref{tab:model_metrics}, emerge che il modello presenta in generale \textbf{prestazioni migliori quando il dataset di addestramento e quello di test coincidono}, ma con un'importante eccezione: \textbf{il caso \textit{Crowded--Crowded} risulta infatti quello con le prestazioni peggiori in assoluto}, con un'accuratezza inferiore rispetto anche a combinazioni in cui train e test avvengono su scenari differenti.\\
+Il dataset \textbf{\textit{Hybrid} si conferma quello con la maggiore capacità di adattamento}, in quanto il modello è allenato su tutte le situazioni possibili, permettendo quindi una classificazione globalmente più accurata. \\
 
-Considerati i buoni livelli di accuratezza raggiunti per tutte le configurazioni, si può dedurre inoltre che la \textbf{presenza di folla} all'interno delle aule \textbf{non sia un fattore particolarmente rilevante} ai fini della localizzazione.\\
+Considerati i buoni livelli di accuratezza raggiunti per tutte le configurazioni, si può dedurre inoltre che la \textbf{presenza di folla} all'interno delle aule \textbf{non sia un fattore particolarmente rilevante} ai fini della localizzazione, anche se sembra introdurre maggiore variabilità e rumore nei dati.\\
 
-Gli \textbf{errori} più frequenti si verificano tra \textbf{``Corridor" ed ``E1"}: sono due ambienti aventi la superficie in comune più estesa (\autoref{Pianta}). Probabilmente, a causa della posizione dei rispettivi router, i segnali Wi-Fi si sovrappongono creando confusione nella previsione e aumentando la probabilità di errori di classificazione.\\
-\textbf{``Garden"} viene \textbf{classificato correttamente} nella maggior parte dei casi: anche in questo caso la motivazione deriva dalla sua posizione all'interno dello spazio considerato. Essendo separato distintamente dalle altre stanze considerate, il modello ha una maggiore facilità nel riconoscerlo.
+Gli \textbf{errori} più frequenti si verificano tra \textbf{``Corridor'' ed ``E1''}: sono due ambienti aventi la superficie in comune più estesa (\autoref{Pianta}). Probabilmente, a causa della posizione dei rispettivi router, i segnali Wi-Fi si sovrappongono creando confusione nella previsione e aumentando la probabilità di errori di classificazione.\\
+\textbf{``Garden''} viene \textbf{classificato correttamente} nella maggior parte dei casi: anche in questo caso la motivazione deriva dalla sua posizione all'interno dello spazio considerato. Essendo separato distintamente dalle altre stanze considerate, il modello ha una maggiore facilità nel riconoscerlo.
 
 \section{Conclusione}
 In questo studio abbiamo analizzato l'efficacia del \textit{WiFi fingerprinting} per la localizzazione, valutando i vantaggi e le sfide di questo approccio. I risultati ottenuti \textbf{confermano la fattibilità del metodo}, pur evidenziando alcune limitazioni e possibili miglioramenti.
