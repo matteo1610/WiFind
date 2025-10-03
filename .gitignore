@@ -710,13 +710,13 @@ $RECYCLE.BIN/
 # End of https://www.toptal.com/developers/gitignore/api/macos,windows,python,linux,jupyternotebooks,cuda,visualstudiocode,jetbrains,latex
 
 # Latex
-*.aux
-*.bbl
-*.blg
-*.log
-*.out
-*.toc
-*.synctex.gz
-*.fdb_latexmk
-*.fls
-*.pdf
+tex/*.aux
+tex/*.bbl
+tex/*.blg
+tex/*.log
+tex/*.out
+tex/*.toc
+tex/*.synctex.gz
+tex/*.fdb_latexmk
+tex/*.fls
+tex/*.pdf
