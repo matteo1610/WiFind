@@ -1,9 +1,9 @@
 \documentclass{article}
-\usepackage[italian]{babel}
+\usepackage[english]{babel}
 \usepackage[a4paper, left=3.5cm, right=3.5cm, top=3cm, bottom=4cm]{geometry}
 \usepackage{graphicx} % Required for inserting images
 \usepackage{tcolorbox}
-\usepackage{booktabs} % Per una tabella più elegante
+\usepackage{booktabs} % For nicer tables
 \usepackage[hidelinks]{hyperref}
 \usepackage{ffcode}
 \usepackage{todonotes}
@@ -18,23 +18,20 @@
     filecolor=Blue,      
     urlcolor=NavyBlue,
     citecolor=NavyBlue,
-    pdftitle={WiFind: Localizzazione indoor tramite WiFi fingerprinting},
+    pdftitle={WiFind: Indoor localization through WiFi fingerprinting},
     pdfpagemode=FullScreen,
     }
 \bibliographystyle{IEEEtran}
 
 \title{{\myfont WiFind}}
 \author{
-    Gabriele Aprile\\
-    \texttt{0001186570}
+    Gabriele Aprile
     \and
-    Matteo Cardellini\\
-    \texttt{0001186864}
+    Matteo Cardellini
     \and
-    Andreea Scrob\\
-    \texttt{0001186874}
+    Andreea Scrob
 }
-\date{A.A. 2024/2025 -- March 2025}
+\date{March 2025}
 
 \begin{document}
 
@@ -48,100 +45,98 @@
 \newpage
 
 %%%%%%%%%%%%%%%%%%%%%%%%
-\section{Introduzione}
-La localizzazione degli utenti all'interno di ambienti è un problema di grande interesse in diversi ambiti, come la sicurezza, la domotica e la navigazione indoor. Una delle tecniche più usate per determinare la posizione di un utente è il \textbf{WiFi fingerprinting}\footnote{tecnica di localizzazione basata sulla raccolta e analisi delle ''impronte digitali'' dei segnali WiFi in una determinata area. Ogni posizione ha una \textit{firma} unica data dalla combinazione dei segnali ricevuti dai vari access point, che viene utilizzata per stimare la posizione dell'utente.}, che sfrutta la potenza del segnale ricevuto (RSSI\footnote{\textit{Received Signal Strength Indicator} indica la potenza del segnale ricevuto da un dispositivo, misurata in dBm (decibel rispetto a 1 mW).}) da più punti di accesso per stimare la posizione tramite modelli di machine learning.
+\section{Introduction}
+User localization inside buildings is an important problem in many domains, such as security, home automation, and indoor navigation. One of the most widely used techniques to determine a user's position is \textbf{WiFi fingerprinting}\footnote{A localization technique based on collecting and analyzing the "fingerprints" of WiFi signals in a given area. Each location has a unique \textit{signature} produced by the combination of signals received from multiple access points, which is then used to estimate the user's position.}, which leverages the received signal strength (RSSI\footnote{\textit{Received Signal Strength Indicator} denotes the power of the signal received by a device, measured in dBm (decibels relative to 1 mW).}) from several access points and employs machine learning models to estimate position.
 
-\subsection{Descrizione del problema}
-Il problema in analisi consiste nel determinare con la massima precisione possibile la posizione di un utente in un dato ambiente indoor utilizzando solo i dati di rete, evitando l'uso di hardware aggiuntivo come GPS o sensori esterni. \\
+\subsection{Problem description}
+The problem addressed here is to determine, as precisely as possible, the location of a user in an indoor environment using only network data, avoiding extra hardware such as GPS or external sensors.\\
+In our case, the objective is to \textit{identify which room of the Computer Science Department a given user is located in}, based solely on information from AlmaWiFi access points.
 
-Nel nostro caso, il problema è \textit{determinare in quale stanza del Dipartimento di Informatica si trovi un dato utente}, basandoci sulle informazioni degli access point della rete universitaria AlmaWiFi.
-
-\subsection{Soluzioni proposte}
-Per affrontare il problema, si propone di:
+\subsection{Proposed solutions}
+To tackle the problem we propose to:
 \begin{itemize}
-    \item scegliere una struttura ben definita e raccogliere i dati al suo interno, in modo da poter \textbf{creare un dataset};
-    \item \textbf{selezionare un modello di machine learning} semplice ed efficace, come \textit{K-Nearest Neighbors (KNN)} o \textit{Random Forest}, per la classificazione della posizione;
-    \item \textbf{valutare le metriche} e \textbf{ottimizzare il modello} in modo da ottenere risultati soddisfacenti.
+    \item select a well-defined building area and collect data within it to \textbf{construct a dataset};
+    \item \textbf{choose a simple and effective machine learning model}, such as \textit{K-Nearest Neighbors (KNN)} or \textit{Random Forest}, to classify locations;
+    \item \textbf{evaluate relevant metrics} and \textbf{tune the model} to achieve satisfactory performance.
 \end{itemize}
 
-\section{Metodi proposti}
+\section{Proposed methods}
 \subsection{Dataset}
-\subsubsection{Raccolta e preprocessing}
+\subsubsection{Collection and preprocessing}
 \begin{figure}[ht!]
     \centering
     {\includegraphics[scale=0.28]{img/piantinaErcolani.JPG}}
-    \caption{Mappa dell’edificio Ercolani con le stanze usate per la raccolta dati}
+    \caption{Map of the Ercolani building with the rooms used for data collection}
     \label{Pianta}
 \end{figure}
-Si è deciso di creare un \textbf{dataset ad-hoc} per il progetto, raccogliendo i dati relativi ai vari \textit{access point} dell'edificio Ercolani (la cui cartina è visibile in \autoref{Pianta}), attraverso una serie di script Python.
-Per valutare l'impatto degli ostacoli sulle onde radio, un fattore che potrebbe causare interferenze, la rilevazione è stata effettuata due volte per ogni stanza: una con la stanza vuota (\textit{Empty}) e una con la stanza affollata (\textit{Crowded}). \\
-Al termine della raccolta, i dati sono stati filtrati conservando esclusivamente quelli relativi alla rete \textbf{AlmaWIFI}, come mostrato in \autoref{tab:wifi_data}.
+We created a project-specific \textbf{dataset} by collecting measurements from the various \textit{access points} in the Ercolani building (map shown in \autoref{Pianta}) using a set of Python scripts.
+To evaluate the impact of obstacles on radio propagation, which can cause interference, measurements were taken twice for each room: once with the room empty (\textit{Empty}) and once with the room crowded (\textit{Crowded}).\\
+After collection, data were filtered to keep only records related to the \textbf{AlmaWIFI} network, as shown in \autoref{tab:wifi_data}.
 
 \begin{table}[ht!]
     \centering
     \small
     \begin{tabular}{llc c c cc}
-        \toprule
-        Aula & Situazione & AP1 & AP2 & \dots & AP41 & AP42 \\
+        	oprule
+        Room & Condition & AP1 & AP2 & \dots & AP41 & AP42 \\
         \midrule
         E1 & Empty & -76.0 &  & \dots & -89.0 & \\
 
         E2 & Empty & -45.0 & -66.0  & \dots &  & \\
-        E3 & Empty & -64.0 & -79.0 & \dots &  &  \\     
+        E3 & Empty & -64.0 & -79.0 & \dots &  &  \\
         Corridor & Empty & -48.0 & -66.0  & \dots &  & \\
         Garden & Empty &  &   & \dots &  & -91.0 \\
          \vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots \\
         E1 & Crowded & -84.0 &  & \dots & -91.0 &  \\
-        E2 & Crowded & -47.0 & -64.0  & \dots &  & \\   
+        E2 & Crowded & -47.0 & -64.0  & \dots &  & \\
         E3 & Crowded & -66.0 & -78.0 & \dots &  &  \\
         Corridor & Crowded &  & -93.0  & \dots &  & \\
         Garden & Crowded & -78.0 &   & \dots &  & \\
 
         \bottomrule
     \end{tabular}
-    \caption{Estratto del dataset \textit{wifi\_fingerprinting\_dataset\_raw.csv} }
+    \caption{Excerpt of the dataset \textit{wifi\_fingerprinting\_dataset\_raw.csv}}
     \label{tab:wifi_data}
 \end{table}
 
-\subsubsection{Analisi Esplorativa dei dati}
-Grazie al supporto di grafici, sono state condotte analisi preliminari sui dati raccolti.\\
-In particolare, è stato realizzato un \textbf{istogramma} per esaminare il numero totale di segnali rilevati da ciascun access point (AP) (vedi \autoref{FreqAP}).
-È stata inoltre generata una \textbf{heatmap} (\autoref{heatmap}) della potenza del segnale Wi-Fi, che evidenzia l'intensità media rilevata per ogni AP all'interno di diverse aree (E1, E2, E3, Corridoio, Giardino), nelle due differenti condizioni ambientali (Empty, Crowded). I colori della mappa riflettono visivamente la forza del segnale ricevuto.\\
-Questi grafici hanno permesso una comprensione più chiara della struttura del dataset, evidenziando come alcuni access point risultassero poco significativi a causa del numero esiguo di rilevazioni associate, suggerendo la necessità di effettuare ulteriori operazioni di pulizia e selezione dei dati.
+\subsubsection{Exploratory data analysis}
+Using plots, we conducted preliminary analyses on the collected data.\\
+In particular, we produced a \textbf{histogram} showing the total number of detections for each access point (AP) (see \autoref{FreqAP}).
+We also generated a \textbf{heatmap} (\autoref{heatmap}) of Wi\-Fi signal strength that highlights the average intensity recorded for each AP across different areas (E1, E2, E3, Corridor, Garden) and the two environmental conditions (Empty, Crowded). The colours in the heatmap visually represent the received signal strength.\\
+These plots clarified the dataset structure and revealed that some APs were not very informative (few detections), suggesting further cleaning and feature selection were needed.
 
 \begin{figure}[ht!]
     \centering
     {\includegraphics[scale=0.50]{img/output.png}}
-    \caption{Istogramma del numero totale di rilevazioni per ciascun Access Point (AP)}
+    \caption{Histogram of total detections per Access Point (AP)}
     \label{FreqAP}
 \end{figure}
 
 \begin{figure}[ht!]
     \centering
     {\includegraphics[scale=0.38]{img/ColorMap.png}}
-    \caption{Heatmap della potenza media del segnale Wi-Fi nelle condizioni \textit{Empty} e \textit{Crowded}}
+    \caption{Heatmap of average Wi\-Fi signal strength in \textit{Empty} and \textit{Crowded} conditions}
     \label{heatmap}
 \end{figure}
 
-\subsubsection{Manipolazioni del dataset}
-Come detto in precedenza, si è notato come alcuni access point venissero rilevati meno frequentemente rispetto ad altri (\autoref{FreqAP}). Per questo motivo, si è scelto di \textbf{ridurre la presenza di AP} poco rappresentativi nel dataset. A tale scopo, è stato utilizzato uno script Python che ha rimosso tutti gli AP con meno di 400 rilevazioni, mantenendo inalterati gli altri. Il dataset ottenuto viene indicato con il nome \textbf{cut400}.\\
-Questa operazione ha avuto anche l’effetto positivo di rendere il dataset più “verticale", ovvero con un numero più contenuto di feature (access point) rispetto al numero totale di istanze. In questo modo, si è ridotto il rischio di sovradimensionamento dello spazio delle feature, che potrebbe altrimenti compromettere l'efficacia di modelli come KNN. \\
-
-Sono stati generati ulteriori dataset, tra cui uno con \textit{valori normalizzati} e uno con \textit{valori binarizzati}.\\
-Nel primo caso, denominato \textbf{normalized}, ogni valore di potenza RSSI è stato scalato in un intervallo compreso tra 0 e 1, con una precisione di 16 cifre decimali. Per la normalizzazione è stato adottato il metodo Min-Max, secondo la formula:
-\[X_{norm}= \frac{X-X_{min}}{X_{max}-X_{min}}\] \\
-Nel dataset binarizzato, chiamato \textbf{binarized}, l'obiettivo è invece quello di rappresentare la semplice presenza o assenza del segnale, piuttosto che la sua intensità. A tal fine, i valori RSSI sono stati convertiti in binari: in presenza di segnale è stato assegnato il valore \textbf{1}, in assenza il valore \textbf{0}. Il risultato di questa trasformazione è mostrato in \autoref{tab:wifi_data_bin}. \\
+\subsubsection{Dataset manipulations}
+As previously noted, some APs were detected far less frequently than others (\autoref{FreqAP}). To address this, we \textbf{reduced the presence of under-represented APs} by removing any AP with fewer than 400 detections using a Python script. The resulting dataset is called \textbf{cut400}.\\
+This step also made the dataset more "tall" (fewer features relative to the number of instances), reducing the risk of high-dimensional feature space issues that can hurt models such as KNN.\\
+We created additional variants: a normalized dataset and a binarized dataset.\\
+In the \textbf{normalized} dataset, each RSSI value was scaled to the range [0,1] using Min–Max normalization:
+\[X_{norm}= \frac{X-X_{min}}{X_{max}-X_{min}}\]
+In the \textbf{binarized} dataset, values indicate only signal presence or absence: \textbf{1} for presence and \textbf{0} for absence. An excerpt is shown in \autoref{tab:wifi_data_bin}.\\
 
 \begin{table}[ht!]
     \centering
     \small
     \begin{tabular}{llc c c cc}
-        \toprule
-        Aula & Situazione & AP1 & AP2 & \dots & AP41 & AP42 \\
+        	oprule
+        Room & Condition & AP1 & AP2 & \dots & AP41 & AP42 \\
         \midrule
         E1 & Empty & 1 & 0 & \dots & 1 & 0 \\
         E2 & Empty & 1 & 1  & \dots & 0 & 0\\
-        E3 & Empty & 1 & 1 & \dots & 0 & 0 \\     
+        E3 & Empty & 1 & 1 & \dots & 0 & 0 \\
         Corridor & Empty & 1 & 1  & \dots & 0 &0 \\
         Garden & Empty & 0 & 0  & \dots &  0& 1\\
          \vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots \\
@@ -152,185 +147,130 @@ Nel dataset binarizzato, chiamato \textbf{binarized}, l'obiettivo è invece quel
         Garden & Crowded & 1 & 0  & \dots & 0 & 0\\
         \bottomrule
     \end{tabular}
-    \caption{Estratto del file \textit{wifi\_fingerprinting\_dataset\_binarized.csv}}
+    \caption{Excerpt of the file \textit{wifi\_fingerprinting\_dataset\_binarized.csv}}
     \label{tab:wifi_data_bin}
 \end{table}
 
-È importante sottolineare che, per rendere \textit{cut400} compatibile con l'addestramento dei modelli, i campi privi di rilevazioni sono stati sostituiti con il valore \textbf{-200}, un valore fittizio che rappresenta ``un access point troppo distante per essere rilevato''. \\
-Questo ragionamento non viene ovviamente applicato per \textit{binarized} e \textit{normalized}, che per sua natura hanno tutti i campi contenenti un valore.\\
+To make \textit{cut400} compatible with model training, missing values were replaced with \textbf{-200}, a synthetic value representing "an access point too far to be detected." This substitution is not applied to the \textit{binarized} and \textit{normalized} variants, which by construction contain values for all fields.
 
-Ulteriori motivazioni e considerazioni riguardanti l'utilizzo di questi dataset alternativi verranno approfondite successivamente.
+Further discussion about the use of these alternative datasets appears later.
 
 \begin{figure}[ht!]
     \centering
     \includegraphics[width=0.5\linewidth]{img/datasetHistory.png}
-    \caption{Schema dell’evoluzione del dataset: da raw a cut400, normalized e binarized}
+    \caption{Dataset evolution diagram: from raw to cut400, normalized and binarized}
     \label{fig:datasetHistory}
 \end{figure}
 
 
+\subsection{Models}
+We followed a methodological approach grounded in our academic background to structure the work rigorously.\\
 
-\subsection{Modelli}
-Sin dall'inizio, abbiamo adottato un approccio metodologico basato sulle conoscenze acquisite nel nostro percorso accademico, al fine di strutturare e avviare il lavoro in modo rigoroso. \\
+Since the task is a \textbf{classification} problem, we started with a K-Nearest Neighbors (\textbf{KNN}) implementation as a simple, well-known baseline. KNN is a supervised algorithm based on proximity: it assigns a label to a new sample based on the majority label among its \textbf{k} nearest neighbors according to a chosen distance metric. This baseline provides a reference for evaluating later, more sophisticated approaches.\\
+We also experimented with more advanced algorithms such as Random Forest.
 
-Dato il problema di \textbf{classificazione} da risolvere, come primo passo, abbiamo scelto di procedere ad una prima implementazione di \textbf{K-Nearest Neighbors} (\textbf{KNN}), un modello di machine learning noto per la sua semplicità ed efficacia, frequentemente incontrato e studiato nel corso della nostra formazione.
-Il \textbf{KNN} è un algoritmo supervisionato basato sul principio della vicinanza: classifica un nuovo dato assegnandogli l'etichetta predominante tra i suoi \textbf{k} vicini più prossimi, misurati tramite diverse metriche. La scelta di questo modello iniziale ci ha permesso di stabilire un punto di riferimento per valutare le prestazioni e l'affidabilità dei successivi approcci sperimentati.\\
-L'analisi è stata approfondita tramite l’uso di algoritmi più raffinati, come ad esempio il Random Forest. \\
-
-Dopo diversi tentativi e ricerche, è stata trovata una pubblicazione \cite{Shang2022} che affronta in modo specifico il problema della localizzazione indoor tramite WiFi fingerprinting.\\
-Nel paper viene condotta un'analisi comparativa tra diversi algoritmi di Machine Learning, evidenziandone i punti di forza e le limitazioni in relazione a questo specifico contesto applicativo.\\
-Vengono citati:
+In the literature we found a relevant paper \cite{Shang2022} that compares several machine learning methods for WiFi fingerprinting. It highlights the trade-offs of different approaches, for example:
 \begin{itemize}
-    \item \textbf{K-Nearest Neighbour (KNN)}: particolarmente adatto a dataset di dimensioni moderate, e relativamente semplice da implementare e regolare. Tuttavia non è consigliato per dataset con un elevato numero di feature, poiché la sua efficienza può risentirne.
-    \item \textbf{Support Vector Machine (SVM)}: efficace su dataset ad alta dimensionalità, grazie alla sua capacità di trovare iperpiani di separazione ottimali tra le classi. Ciononostante, può risultare meno performante in presenza di numerosi outlier o quando le classi sono fortemente sovrapposte nello spazio delle feature, rendendo difficile la separazione dei cluster.
-    \item \textbf{Random Forest}: particolarmente indicato per dataset di grandi dimensioni, grazie alla sua robustezza e capacità di generalizzazione. Essendo un metodo basato su un insieme di alberi decisionali, riesce a ridurre il rischio di overfitting e a garantire una maggiore stabilità nelle predizioni.
+    \item \textbf{KNN}: well-suited for moderate-sized datasets and easy to implement and tune; less recommended when the number of features becomes very large.
+    \item \textbf{SVM}: effective in high-dimensional spaces by finding separating hyperplanes; can be sensitive to outliers and overlapping classes.
+    \item \textbf{Random Forest}: robust and generalizes well for large datasets; as an ensemble of decision trees it reduces overfitting and yields stable predictions.
 \end{itemize}
 
-Considerando i nostri dataset di dimensioni non eccessive e di dimensionalità mai superiori a 44 (massimo numero di AP individuati), si è deciso di procedere utilizzando il modello \textit{KNN}, puntando ad un miglioramento tramite \textit{tuning} di parametri.\\
-Qualora il KNN non si fosse rivelato sufficientemente performante, avremmo proceduto con un'analisi più approfondita di altri modelli di classificazione, al fine di individuare soluzioni più efficaci per il problema affrontato.
+Since our datasets are moderate in size and the feature count never exceeds 44 (maximum number of detected APs), we focused on KNN and hyperparameter tuning. If KNN proved insufficient, we planned to explore other classifiers more deeply.
 
 %%%%%
 \subsection{K-Nearest Neighbors}
-\subsubsection{Divisione dataset}
-Al fine di verificare la robustezza del modello nelle varie possibili situazioni di affollamento delle stanze, il dataset è stato manipolato per ottenere tre dataframe diversi, corrispondenti alle situazioni “\textbf{Empty}" (aula vuota), “\textbf{Crowded}" (aula affollata) e “\textbf{Hybrid}" (situazione mista, ovvero l'unione dei due dataframe precedenti).\\
-Per gestire correttamente la fase di addestramento e valutazione, si è definita la funzione \textit{split\_data}, che divide ogni sottoinsieme in un \textbf{training set} (70\% dei dati) e un \textbf{test set} (30\% dei dati). Questa suddivisione avviene in modo \textbf{stratificato}, ovvero mantenendo la distribuzione originale delle classi.\\
-Il \textit{validation set} non è stato separato esplicitamente in questa fase, ma il suo utilizzo è garantito tramite una tecnica descritta nel paragrafo seguente.
+\subsubsection{Dataset splitting}
+To evaluate robustness under different crowding conditions, we created three dataframes corresponding to \textbf{Empty} (room empty), \textbf{Crowded} (room crowded) and \textbf{Hybrid} (combined) scenarios.\\
+We defined a \textit{split\_data} function that splits each subset into a \textbf{training set} (70\%) and a \textbf{test set} (30\%) using stratified sampling to preserve class proportions. No explicit validation set was created; validation is performed with the technique described next.
 
+\subsubsection{Model optimization}
+While researching KNN improvements we considered approaches from the literature such as Weighted KNN (WKNN) \cite{electro}, which uses distance-based weighting to improve neighbor selection.\\
+We chose a well-established approach: \textbf{Grid Search} to systematically find optimal hyperparameters.
 
-\subsubsection{Ottimizzazione del Modello}
-Durante lo studio per migliorare le prestazioni del modello KNN, ci siamo imbattuti in diversi approcci affrontati dalla letteratura del caso, come ad esempio quello presentato in \cite{electro}: il metodo Weighted k-Nearest Neighbors (WKNN) permette di utilizzare metriche di distanza più sofisticate e migliorare la selezione dei vicini. \\
-Tuttavia, abbiamo scelto un approccio più tradizionale e consolidato: \textbf{Grid Search}, che consente una ricerca sistematica degli iperparametri ottimali.\\
-
-\textbf{Grid Search: ricerca degli iperparametri ottimali}\\\\
-La \textit{Grid Search} è una tecnica utilizzata per individuare la combinazione ottimale di \textbf{iperparametri}\footnote{Parametri che non vengono appresi dal modello, ma devono essere definiti a priori.} di un algoritmo di machine learning.  
-Nel nostro caso, è stata impiegata per ottimizzare le prestazioni del modello KNN, esplorando sistematicamente diverse configurazioni degli iperparametri.
-
-Il processo si articola in tre fasi principali:
+    	extbf{Grid Search: searching for optimal hyperparameters}\\
+Grid Search finds the best combination of \textbf{hyperparameters}\footnote{Parameters not learned by the model but set before training.} by exhaustively evaluating configurations.
+The process consists of:
 \begin{enumerate}
-    \item definizione di una griglia di valori possibili per ciascun iperparametro del modello;
-    \item addestramento del modello su tutte le combinazioni possibili della griglia;
-    \item valutazione delle prestazioni di ogni combinazione tramite una metrica predefinita (es. accuratezza), e selezione della migliore configurazione.
+    \item defining a grid of possible values for each hyperparameter;
+    \item training the model on every combination in the grid;
+    \item evaluating each combination with a chosen metric (e.g. accuracy) and selecting the best.
 \end{enumerate}
 
-Nel nostro progetto, la griglia dei valori esplorata è riportata nella \autoref{tab:param_grid}.
+The grid we explored is shown in \autoref{tab:param_grid}.
 
 \begin{table}[ht!]
 \centering
 \begin{tabular}{ll}
-\toprule
-\textbf{Parametro} & \textbf{Valori esplorati} \\
-\midrule
-\texttt{n\_neighbors} & 3--19 \\
-\texttt{weights} & \texttt{['uniform', 'distance']} \\
-\texttt{algorithm} & \texttt{['ball\_tree', 'brute']} \\
-\texttt{metric} & \texttt{['euclidean', 'manhattan']} \\
-\bottomrule
+    	oprule
+    	extbf{Parameter} & \textbf{Values explored} \\
+    \midrule
+    	exttt{n\_neighbors} & 3--19 \\
+    	exttt{weights} & \texttt{['uniform', 'distance']} \\
+    	exttt{algorithm} & \texttt{['ball\_tree', 'brute']} \\
+    	exttt{metric} & \texttt{['euclidean', 'manhattan']} \\
+    \bottomrule
 \end{tabular}
-\caption{Griglia dei valori esplorati tramite Grid Search}
+\caption{Grid of values explored via Grid Search}
 \label{tab:param_grid}
 \end{table}
 
-Di seguito una panoramica dei parametri ottimizzati:
-
+Overview of optimized parameters:
 \begin{itemize}
-    \item \textbf{n\_neighbors} -- rappresenta il valore di $K$ in KNN, ovvero il numero di vicini da considerare per effettuare la classificazione.
-    \begin{itemize}
-        \item Un valore di $K$ troppo basso può portare a \textit{overfitting}, mentre valori troppo alti rischiano di causare \textit{underfitting}.
-        \item \underline{Valutazione}: Il range 3--19 è stato ritenuto un buon compromesso per bilanciare queste problematiche.
-    \end{itemize}
-    
-    \item \textbf{weights} -- specifica l'importanza assegnata ai vicini nel processo decisionale.
-    \begin{itemize}
-        \item \textit{uniform}: tutti i vicini contribuiscono in egual misura.
-        \item \textit{distance}: i vicini più prossimi hanno un peso maggiore.
-        \item \underline{Valutazione}: Considerando la natura dei dati, l'opzione \textit{uniform} potrebbe essere sufficiente, ma si è lasciata comunque la scelta aperta.
-    \end{itemize}
-    
-    \item \textbf{algorithm} -- metodo utilizzato per calcolare i vicini più prossimi.
-    \begin{itemize}
-        \item \textit{ball\_tree}: adatto a dataset di dimensioni medio-grandi e con molte feature sparse.
-        \item \textit{brute}: approccio esaustivo che calcola la distanza tra tutte le coppie di punti; adatto a dataset piccoli.
-        \item \textit{kd\_tree}: efficiente con dataset bilanciati e a bassa dimensionalità.
-        \item \underline{Valutazione}: Considerate le dimensioni contenute del dataset, \textit{ball\_tree} e \textit{brute} sono risultati i più adatti.
-    \end{itemize}
-    
-    \item \textbf{metric} -- criterio di distanza utilizzato per calcolare la somiglianza tra i punti.
-    \begin{itemize}
-        \item \textit{euclidean}: la distanza euclidea classica tra punti nello spazio.
-        \item \textit{manhattan}: somma delle distanze assolute per ogni dimensione; più robusta in spazi ad alta dimensionalità.
-        \item \textit{minkowski}: generalizzazione delle due precedenti.
-        \item \underline{Valutazione}: Dato il numero limitato di feature, si è scelto di testare soltanto le metriche \textit{euclidean} e \textit{manhattan}.
-    \end{itemize}
+    \item \textbf{n\_neighbors}: the $K$ value in KNN. Too small may overfit; too large may underfit. The range 3--19 was chosen as a practical compromise.
+    \item \textbf{weights}: either \textit{uniform} (equal vote) or \textit{distance} (closer neighbors weighted more). Both were tested.
+    \item \textbf{algorithm}: neighbor search method (\textit{ball\_tree}, \textit{brute}). Given the dataset size, \textit{ball\_tree} and \textit{brute} were appropriate choices.
+    \item \textbf{metric}: distance metric (\textit{euclidean}, \textit{manhattan}). Both were evaluated.
 \end{itemize}
 
-Altri iperparametri disponibili per il modello KNN, ma ritenuti meno influenti nel nostro contesto, sono stati lasciati ai valori di default:
+Other hyperparameters (e.g. \textbf{p}, \textbf{leaf\_size}) were left at default values as they were considered less influential.
+
+    	extbf{Cross Validation: robust validation of hyperparameter choices}\\
+Grid Search was implemented using Scikit-Learn's \textit{GridSearchCV}, which evaluates each hyperparameter combination with \textbf{Cross Validation}. Training data are split into K folds; each iteration trains on K-1 folds and validates on the remaining fold. We used Stratified K-Fold to preserve class proportions. The mean performance across folds provides a stable estimate for selecting the best configuration.
+
+\subsubsection{Evaluation metrics}
+After selecting the best hyperparameters, model performance was evaluated using:
 \begin{itemize}
-    \item \textbf{p} -- esponente utilizzato nella metrica Minkowski.
-    \item \textbf{leaf\_size} -- numero massimo di punti che possono essere contenuti in una foglia degli alberi (\textit{ball\_tree} e \textit{kd\_tree}).
-\end{itemize}
-
-\textbf{Cross Validation: validazione robusta delle scelte sui parametri
-}\\\\
-La Grid Search è implementata nel codice tramite la funzione \textit{GridSearchCV} del pacchetto Scikit-Learn. Questa funzione consente di individuare la combinazione ottimale di iperparametri attraverso una valutazione basata su \textit{validation test}. 
-In particolare, sfrutta la tecnica della \textbf{Cross Validation}, suddividendo il dataset di addestramento in K sottoinsiemi (\textit{fold}), eseguendo il training del modello K volte:
-\begin{itemize}
-    \item Ad ogni iterazione, K-1 folds vengono usati per l'addestramento e il fold rimanente è considerato come validation set.
-    \item Alla fine, si calcola la media delle prestazioni, ottenendo una valutazione più stabile e affidabile.
-\end{itemize}
-
-Abbiamo scelto di utilizzare la \textit{Stratified K-Fold Cross Validation}, in quanto garantisce che ogni fold mantenga le stesse proporzioni delle classi presenti nel dataset originale. Questo è particolarmente importante quando le classi sono sbilanciate, poiché assicura che la distribuzione dei dati sia coerente in tutte le iterazioni.\\
-
-L'integrazione di Grid Search con Cross Validation ha permesso di \textbf{ottimizzare il modello in modo rigoroso}, migliorandone l'affidabilità e la capacità di generalizzare su nuovi dati.
-
-
-\subsubsection{Metriche}
-Dopo aver trovato i migliori parametri, il modello viene testato e valutato su diverse metriche:
-\begin{itemize}
-    \item \textbf{Accuracy}: misura la quantità di elementi correttamente classificati (veri positivi e veri negativi) sul totale delle previsioni.
-    \item \textbf{Precision}: misura la quantità di elementi correttamente classificati come positivi (veri positivi) sul totale di tutti i positivi (veri positivi e falsi positivi).
-    \item \textbf{Recall}: misura quanto bene il modello riesce a trovare tutti i veri positivi (sull'insieme di veri positivi e falsi negativi).
-    \item \textbf{F1-score}: è la media armonica tra Precision e Recall.
+    \item \textbf{Accuracy}: fraction of correctly classified instances.
+    \item \textbf{Precision}: fraction of correct positive predictions among all positive predictions.
+    \item \textbf{Recall}: fraction of true positives correctly identified.
+    \item \textbf{F1-score}: harmonic mean of Precision and Recall.
 \end{itemize}
 
 
 %%%%%%%%%%%%%%%%%%%%%%
-\section{Risultati e Commenti}
-Dopo aver testato il sistema sui diversi dataset, abbiamo ritenuto più significativo utilizzare il \textbf{dataset \textit{binarized}}, in cui i segnali sono rappresentati in termini di presenza o assenza (1/0), anziché attraverso i valori esatti di intensità (RSSI).\\
+\section{Results and discussion}
+After testing on different dataset variants, we found the \textbf{binarized} dataset (presence/absence) to be the most informative for our experiments compared to datasets with raw RSSI values.
 
-Questa scelta è stata motivata dal sospetto di \textit{overfitting} riscontrato nei modelli addestrati con i dataset alternativi contenenti valori RSSI. La nostra ipotesi è che fornire al sistema valori di intensità troppo precisi, a fronte di un dataset relativamente ridotto, induca il modello a cogliere pattern eccessivamente specifici, compromettendone la capacità di generalizzazione su dati nuovi.\\
-
-La generalizzazione introdotta dal formato binario ha inoltre reso i test qualitativamente più significativi, evidenziando con maggiore chiarezza la complessità del problema e le differenze tra le classi.
+This choice was motivated by suspected \textit{overfitting} when training on precise RSSI values: with a relatively small dataset, models may learn overly specific patterns, reducing generalization. Binarization improves generalization and makes results easier to interpret.
 
 \subsection{Training}
-Utilizzando GridSearchCV, abbiamo trovato gli iperparametri ideali per ognuno dei tre scenari Empty, Crowded e Hybrid, ottenendo i risultati riportati nella \autoref{tab:best_params}. \\
+Using GridSearchCV we found the best hyperparameters for each of the three scenarios (Empty, Crowded, Hybrid), reported in \autoref{tab:best_params}.\\
 \begin{table}[ht!]
     \centering
     \begin{tabular}{ c c c c c c}
         \hline
-        \textbf{Scenario} & \textbf{Algorithm} & \textbf{Metric} & \textbf{Neighbors} & \textbf{Weights} & \textbf{Best Accuracy} \\
+        	extbf{Scenario} & \textbf{Algorithm} & \textbf{Metric} & \textbf{Neighbors} & \textbf{Weights} & \textbf{Best Accuracy} \\
         \hline
         Empty   & brute         & manhattan & 6  & distance & 0.9793  \\
         Crowded & ball\_tree    & manhattan & 15 & distance & 0.9340    \\
         Hybrid  & brute         & euclidean & 16 & uniform  & 0.9302     \\
         \hline
     \end{tabular}
-    \caption{Configurazioni ottimali del modello KNN per i tre scenari, con relative accuratezze}
+    \caption{Optimal KNN configurations for the three scenarios, with corresponding accuracies}
     \label{tab:best_params}
 \end{table}
 
-È interessante notare come per ben due scenari l'algoritmo usato sia di tipo \textit{brute force}, a dimostrazione del fatto che le dimensioni relativamente contenute del dataset consentono il calcolo delle distanze tra tutte le coppie di punti. Per quanto riguarda le metriche, in due casi su tre è stata scelta la \textit{manhattan}, attestando una tendenza del dataset a presentarsi come ``largo", ovvero con un numero considerevole di features.\\
-Si è proceduto ad addestrare il modello usando gli iperparametri trovati.
+For two scenarios the \textit{brute} algorithm was selected, reflecting that the dataset size allows exhaustive distance computation. The \textit{manhattan} metric was chosen in two cases, indicating a tendency to benefit from Manhattan distances in this feature space. The models were trained using these parameters.
 
 \subsection{Testing}
-Per testare in modo più rigoroso il modello, si è deciso di valutarlo su tutte le possibili combinazioni ambientali, come riportato in \autoref{tab:model_metrics}.
-Ad ogni combinazione sono stati associati i relativi valori delle metriche precedentemente discussi.
-
+We evaluated each trained model across all combinations of training and testing scenarios; results are shown in \autoref{tab:model_metrics}.
 \begin{table}[ht!]
     \centering
 
     \begin{tabular}{c c c c c c }
         \hline
-         \textbf{Train Model} & \textbf{Test Model} & Accuracy & Precision & Recall & F1-score \\
+         	extbf{Train Model} & \textbf{Test Model} & Accuracy & Precision & Recall & F1-score \\
         \hline
         Empty   & Empty   & 0.932 & 0.935 & 0.932 & 0.931 \\
         Empty   & Crowded & 0.813 & 0.808 & 0.813 & 0.797 \\
@@ -343,38 +283,33 @@ Ad ogni combinazione sono stati associati i relativi valori delle metriche prece
         Hybrid  & Hybrid  & 0.929 & 0.933 & 0.929 & 0.929 \\
         \hline
     \end{tabular}
-    \caption{Valutazione del modello KNN: metriche per tutte le combinazioni di training e test}
+    \caption{KNN model evaluation: metrics for all training/testing combinations}
     \label{tab:model_metrics}
 \end{table}
 
 \begin{figure}[ht!]
     \centering
     {\includegraphics[scale=0.39]{img/MCGSCV.png}}
-    \caption{Matrici di confusione ottenute dal modello KNN ottimizzato (GridSearchCV) su dataset \textit{Binarized}}
+    \caption{Confusion matrices obtained from the optimized KNN model (GridSearchCV) on the \textit{binarized} dataset}
     \label{MCGtid}
 \end{figure} 
 
-Dall'analisi delle matrici di confusione riportate in \autoref{MCGtid} e dai dati in \autoref{tab:model_metrics}, emerge che il modello presenta in generale \textbf{prestazioni migliori quando il dataset di addestramento e quello di test coincidono}, ma con un'importante eccezione: \textbf{il caso \textit{Crowded--Crowded} risulta infatti quello con le prestazioni peggiori in assoluto}, con un'accuratezza inferiore rispetto anche a combinazioni in cui train e test avvengono su scenari differenti.\\
-Il dataset \textbf{\textit{Hybrid} si conferma quello con la maggiore capacità di adattamento}, in quanto il modello è allenato su tutte le situazioni possibili, permettendo quindi una classificazione globalmente più accurata. \\
+From the confusion matrices in \autoref{MCGtid} and the metrics in \autoref{tab:model_metrics}, the model generally performs \textbf{better when training and test datasets match}, with an exception: the \textit{Crowded--Crowded} case is the worst performing, showing lower accuracy even compared to some cross-scenario evaluations.\\
+The \textit{Hybrid} dataset proved the most adaptable since it trains on all conditions and yields globally better classification performance.\\
 
-Considerati i buoni livelli di accuratezza raggiunti per tutte le configurazioni, si può dedurre inoltre che la \textbf{presenza di folla} all'interno delle aule \textbf{non sia un fattore particolarmente rilevante} ai fini della localizzazione, anche se sembra introdurre maggiore variabilità e rumore nei dati.\\
+Overall, crowd presence does not appear to be a decisive factor for localization accuracy, although it introduces additional variability and noise.\\
+The most frequent errors occur between \textbf{"Corridor" and "E1"}, which share the largest common area (\autoref{Pianta}); overlapping router coverage likely causes confusion. The \textbf{"Garden"} area is correctly classified in most cases due to its spatial separation from other rooms.
 
-Gli \textbf{errori} più frequenti si verificano tra \textbf{``Corridor'' ed ``E1''}: sono due ambienti aventi la superficie in comune più estesa (\autoref{Pianta}). Probabilmente, a causa della posizione dei rispettivi router, i segnali Wi-Fi si sovrappongono creando confusione nella previsione e aumentando la probabilità di errori di classificazione.\\
-\textbf{``Garden''} viene \textbf{classificato correttamente} nella maggior parte dei casi: anche in questo caso la motivazione deriva dalla sua posizione all'interno dello spazio considerato. Essendo separato distintamente dalle altre stanze considerate, il modello ha una maggiore facilità nel riconoscerlo.
+\section{Conclusion}
+This study analyzed the effectiveness of \textit{WiFi fingerprinting} for indoor localization, evaluating benefits and limitations. The results \textbf{confirm the feasibility of the method} while highlighting areas for improvement.
 
-\section{Conclusione}
-In questo studio abbiamo analizzato l'efficacia del \textit{WiFi fingerprinting} per la localizzazione, valutando i vantaggi e le sfide di questo approccio. I risultati ottenuti \textbf{confermano la fattibilità del metodo}, pur evidenziando alcune limitazioni e possibili miglioramenti.
+We showed that using this technique, even with a relatively simple model such as \textbf{KNN}, provides sufficiently precise localization: it is \textbf{possible to identify a user inside the Computer Science Department using only radio signals from AlmaWIFI routers}.
 
-Il nostro studio ha dimostrato che l'uso di questa tecnica, anche con l'applicazione di un modello relativamente semplice come \textbf{KNN}, consente una localizzazione sufficientemente precisa: i risultati evidenziano che è \textbf{possibile individuare un utente all'interno del Dipartimento di Informatica utilizzando esclusivamente le onde radio emesse dai router AlmaWIFI}.
+\subsection{Future work}
+The current model may not remain robust if room layouts change or if the system is deployed in a different building. For example, including additional areas or changing the building layout could reduce performance.\\
+An extension would be to pursue \textit{higher localization granularity}: rather than identifying only the room, localize a more precise area inside a room.
 
-\subsection{Sviluppi futuri}
-Il modello sviluppato potrebbe non essere sufficientemente robusto nel caso di \textit{modifiche alle stanze considerate}. Ad esempio, se venissero incluse le due aree in grigio di \autoref{Pianta} o, addirittura, se fosse necessario cambiare edificio, è possibile che il sistema implementato con questo approccio non fornisca più risultati soddisfacenti.\\
-
-Una possibile espansione del lavoro potrebbe essere orientata verso una \textit{maggiore granularità nella localizzazione}. Invece di limitarsi a individuare la singola stanza, potrebbe essere interessante poter localizzare un'area più precisa all'interno della stanza stessa.\\
-
-Per affrontare questo nuovo obiettivo, sarebbe necessario \textit{raccogliere un dataset più ampio o adottare metodologie alternative}, come ad esempio registrare la posizione esatta in cui vengono rilevati i segnali.\\
-
-Questa espansione del dataset potrebbe anche rappresentare un'opportunità per esplorare e \textit{risolvere il problema utilizzando modelli più avanzati}, come SVM e Random Forest, che potrebbero contribuire a migliorare ulteriormente le prestazioni del sistema di localizzazione.
+Achieving this would require \textit{collecting a larger dataset or adopting alternative methodologies}, such as logging exact measurement positions. A larger dataset would also allow exploring more advanced models (e.g. SVM, Random Forest) that may further improve localization performance.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -1,11 +1,13 @@
-# Project Title: WiFind
+# WiFind
 
 ## Overview
-WiFind is a project focused on indoor localization using **WiFi Fingerprinting** techniques. The main objective is to determine the position of a user inside a building by analyzing Wi-Fi signals (RSSI) from various Access Points (APs). This project was conducted in the Ercolani building of the University of Bologna, where real-world data was collected to create a customized dataset.  
+WiFind is a project focused on indoor localization using **WiFi Fingerprinting** techniques. The main objective is to determine the position of a user inside a building by analyzing Wi-Fi signals (RSSI) from various Access Points (APs). This project was conducted in the Ercolani building of the University of Bologna, where real-world data was collected to create a customized dataset.
+
+> A full technical report is available here: [REPORT.pdf](./docs/REPORT.pdf)
 
 ## Installation and Setup
 Instructions on setting up the project environment:
-1. Clone the repository: `git clone https://gitlab.com/GAperol/uiauia-project-ai.git`
+1. Clone the repository: `git clone https://github.com/matteo1610/WiFind.git`
 2. Install dependencies: `pip install -r requirements.txt`
 
 ## Data
