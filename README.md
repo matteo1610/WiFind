@@ -19,7 +19,8 @@ The project uses Wi-Fi fingerprinting data collected in real-world conditions. T
 ## Usage
 1. Navigate to the project directory:
    ```bash
-   cd /path/to/uiauia-project-ai
+   cd /path/to/WiFind
+   ```
 2. Start Jupyter Notebook:
    ```bash
    jupyter notebook
